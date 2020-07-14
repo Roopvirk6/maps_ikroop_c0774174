@@ -187,7 +187,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             private void setMarker(LatLng latLng) {
 
                 MarkerOptions options = new MarkerOptions().position(latLng)
-                        .title("your destination").snippet("reached location");
+                        .title("Your destination").snippet("Reached location");
                 distance=CalculationByDistance(43.653, 79.3832, 35.0,75.0);
                 distanceLines = CalculationByLines(43.563, 79.382);
 
