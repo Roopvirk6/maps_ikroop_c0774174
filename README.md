@@ -13,3 +13,4 @@ VARIOUS FOLDERS:
 <img src="https://s7.gifyu.com/images/Screenshot_1594673252.png" alt="Screenshot_1594673252.png" alt ="current location" height="400" width="400" border="0">
 <img src="https://s7.gifyu.com/images/Screenshot_1594673260.png" alt="Screenshot_1594673260.png" alt = "marker location" height = "400" width = "400" border="0" />
 <img src="https://s7.gifyu.com/images/Screenshot_1594668214.png" alt="Screenshot_1594668214.png" alt = "distance and total distance" height = "400" width = "400" border="0" />
+<img src="https://s7.gifyu.com/images/Screenshot_1594685996.png" alt="Screenshot_1594685996.png" alt = "individual distance" height = "400" width = "400" border="0" />
