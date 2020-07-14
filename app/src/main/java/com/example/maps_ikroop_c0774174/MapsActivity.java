@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static android.os.Build.VERSION_CODES.N;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -44,7 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int REQUEST_CODE = 1;
     private Marker homeMarker;
     private Marker destMarker;
-    double  latitude,longitude;
+    double  latitude,longitude,distance,distanceLines;
     Polyline line;
     Polygon shape;
     private static final int POLYGON_SIDES = 4;
@@ -92,11 +94,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     TextView t2 = (TextView)row.findViewById(R.id.longitude);
                     TextView t3 = (TextView)row.findViewById(R.id.txt_title);
                     TextView t4 = (TextView)row.findViewById(R.id.txt_snippet);
+                    TextView t8 = (TextView)row.findViewById(R.id.txt_distancecalculated);
                     LatLng latLng = marker.getPosition();
                     t3.setText(marker.getTitle());
                     t1.setText(String.valueOf(latLng.latitude));
                     t2.setText(String.valueOf(latLng.longitude));
                     t4.setText(marker.getSnippet());
+                    t8.setText("Total distance calculated : " + distance + " miles");
                     return row;
                 }
             });
@@ -131,6 +135,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else
             startUpdateLocation();
 
+
+
         mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
             @Override
             public void onPolygonClick(Polygon polygon) {
@@ -145,8 +151,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         View row1 = getLayoutInflater().inflate(R.layout.custom_distance,null);
                         TextView t5 = (TextView) row1.findViewById(R.id.txt_distance);
                         TextView t6 = (TextView) row1.findViewById(R.id.txt_totaldistance);
-                        t5.setText("Distance between lines: 1300 miles");
-                        t6.setText("Total distance: 27000 miles");
+                        t5.setText(" Total Distance : " + distance +  " miles");
+                        t6.setText("Distance between two lines: " + distanceLines + "miles");
+
 
 
 
@@ -181,6 +188,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 MarkerOptions options = new MarkerOptions().position(latLng)
                         .title("your destination").snippet("reached location");
+                distance=CalculationByDistance(43.653, 79.3832, 35.0,75.0);
+                distanceLines = CalculationByLines(43.563, 79.382);
+
 
 
 
@@ -194,6 +204,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     drawShape();
             }
 
+            public double CalculationByLines(double initialLat, double initialLong)
+            {
+                double latDiff = initialLong - initialLat;
+                return latDiff;
+            }
+
+               public double CalculationByDistance(double initialLat, double initialLong, double finalLat, double finalLong)
+               {
+
+
+               double latDiff = finalLat - initialLat;
+               double longDiff = finalLong - initialLong;
+               double earthRadius = 6371;
+
+               double distance = 2*earthRadius*Math.asin(Math.sqrt(Math.pow(Math.sin(latDiff/2.0),2)+Math.cos(initialLat)*Math.cos(finalLat)*Math.pow(Math.sin(longDiff/2),2)));
+
+                return distance;
+
+            }
+
+
             private void drawShape() {
                 PolygonOptions options = new PolygonOptions()
                         .fillColor(Color.GREEN)
@@ -203,10 +234,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (int i = 0; i < POLYGON_SIDES; i++) {
                     options.add(markers.get(i).getPosition()).fillColor(Color.GREEN).clickable(true);
 
+
                 }
 
+
                 shape = mMap.addPolygon(options);
+
                 shape.setClickable(true);
+
+
 
             }
 
@@ -251,9 +287,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .snippet("Your location").draggable(true);
         homeMarker = mMap.addMarker(options);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
+
     }
 
-    private String getAddress(double latitude, double longitude) {
+    public String getAddress(double latitude, double longitude) {
         StringBuilder result = new StringBuilder();
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
